@@ -88,6 +88,7 @@ export default function MainPage() {
       setFormData({
         height: user.height,
         weight: user.weight,
+        age: user.age,
         dietPlan: user.dietPlan,
       });
     }
@@ -118,7 +119,7 @@ export default function MainPage() {
       });
       console.log("Update successful:", response.data);
       toast.success("User data updated successfully");
-      setUser(response.data.user); // Update the user context with the new data
+      setUser(response.data.user); 
     } catch (error) {
       console.error("Error updating user data:", error);
     }
@@ -162,6 +163,7 @@ export default function MainPage() {
               <Separator className="bg-white/20" />
 
               <div className="space-y-4">
+                <StatItem icon={Ruler} label="Age" value={`${user.age}`} />
                 <StatItem icon={Activity} label="BMR" value={`${user.bmr.toFixed(0)} kcal`} />
                 <StatItem icon={Ruler} label="Height" value={`${user.height} cm`} />
                 <StatItem icon={Weight} label="Weight" value={`${user.weight} kg`} />
@@ -300,7 +302,6 @@ export default function MainPage() {
                   <SelectContent>
                     <SelectItem value="weight_loss">Weight Loss</SelectItem>
                     <SelectItem value="weight_gain">Weight Gain</SelectItem>
-                    <SelectItem value="maintenance">Maintenance</SelectItem>
                   </SelectContent>
                 </Select>
               </CardContent>
