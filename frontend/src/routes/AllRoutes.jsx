@@ -7,12 +7,16 @@ import ProtectedRoutes from '../../utils/ProtectedRoutes'
 import MainPage from '../pages/MainPage'
 import Roadmap from '../pages/Roadmap'
 import Blogs from '@/pages/Blogs'
+import About from '../pages/About'
+import Faq from '../pages/Faq'
 
 
 export default function AllRoutes() {
     return (
         <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/faq" element={<Faq />} />
             <Route path='/signin' element={<SignIn />} />
             <Route path='/signup' element={<SignUp />} />
             <Route element={<ProtectedRoutes />}>

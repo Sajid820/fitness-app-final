@@ -63,7 +63,7 @@ function ChatBot() {
     return (
         <Card className="fixed bottom-24 right-10 w-96 h-[70vh] shadow-xl z-50 bg-gray-50 border-2 border-slate-200">
             <CardHeader>
-                <CardTitle>AI Fitness Trainer</CardTitle>
+                <CardTitle>Fitness Trainer</CardTitle>
             </CardHeader>
             <CardContent className="flex flex-col h-full">
                 <div className="flex-grow overflow-y-auto mb-4 space-y-4">

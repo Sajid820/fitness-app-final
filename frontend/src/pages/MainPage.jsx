@@ -172,7 +172,7 @@ export default function MainPage() {
 
         <main className="flex-1 p-10">
           <h1 className="text-xl font-light text-white/80 bg-pink-600 w-fit p-2 mx-auto rounded-lg mb-6 border-8 border-pink-500 ">Welcome {user.firstName}</h1>
-          <div className="flex gap-6 ">
+          <div className="flex gap-6 flex-wrap">
             {user.dietPlan && (
               <div className="py-4 w-fit">
                 <div className="card bg-base-100 image-full w-[360px] h-64 shadow-xl">
@@ -329,7 +329,7 @@ export default function MainPage() {
           whileTap={{ scale: 0.9 }}
         >
           <Button onClick={() => setShow(!show)} className="bg-blue-600 hover:bg-blue-500 text-white rounded-full p-10 shadow-lg">
-            Chat With AI Trainer
+            Chat With Trainer Bot
           </Button>
         </motion.div>
 
