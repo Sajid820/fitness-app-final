@@ -13,8 +13,9 @@ function Roadmap() {
     const [suggestedMeals, setSuggestedMeals] = useState();
     const [selectedMeal, setSelectedMeal] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
-
-
+    const [timer, setTimer] = useState(0);  
+    const [timerRunning, setTimerRunning] = useState(false);  
+    const [weeklyAchievements, setWeeklyAchievements] = useState(0); 
 
     useEffect(() => {
         const fetchUser = async () => {
@@ -32,22 +33,20 @@ function Roadmap() {
         fetchUser();
     }, []);
 
-
-    //fetchMeals
+    // Fetch meals
     useEffect(() => {
         try {
             const fetchMeals = async () => {
                 const response = await axios.get('http://localhost:3000/api/meals/getMeals');
                 console.log("MEALS: ", response.data.SendMeals);
                 setSuggestedMeals(response.data.SendMeals);
-            }
+            };
             fetchMeals();
-
         } catch (error) {
             toast.error("Error fetching meals");
             console.log("Error fetching meals:", error);
         }
-    }, [])
+    }, []);
 
     let weightLossMeals;
     let weightGainMeals;
@@ -55,10 +54,6 @@ function Roadmap() {
         weightLossMeals = suggestedMeals.filter(meal => meal.dietPlanType === "weightLoss");
         weightGainMeals = suggestedMeals.filter(meal => meal.dietPlanType === "weightGain");
     }
-
-    console.log("Weight Loss Meals: ", weightLossMeals);
-    console.log("Weight Gain Meals: ", weightGainMeals);
-
 
     useEffect(() => {
         const weightLossMeals = [
@@ -83,6 +78,30 @@ function Roadmap() {
         setExercises(mockExercises);
     }, [user]);
 
+    useEffect(() => {
+        let interval;
+        if (timerRunning) {
+            interval = setInterval(() => {
+                setTimer((prev) => prev + 1);
+            }, 1000); // Update timer every second
+        } else {
+            clearInterval(interval);
+        }
+        return () => clearInterval(interval);
+    }, [timerRunning]);
+
+    const handleStartStopTimer = () => {
+        setTimerRunning((prev) => !prev);
+    };
+
+    const handleResetTimer = () => {
+        setTimer(0);
+    };
+
+    const handleExerciseCompletion = () => {
+        setWeeklyAchievements((prev) => prev + 1);
+    };
+
     const dietChartData = meals.map(meal => ({
         name: meal.name,
         calories: meal.calories,
@@ -90,7 +109,6 @@ function Roadmap() {
         carbs: meal.carbs,
         fat: meal.fat,
     }));
-
 
     const openModal = (meal) => {
         setSelectedMeal(meal);
@@ -152,50 +170,43 @@ function Roadmap() {
                         <h1 className="text-black/80 font-bold text-3xl">Suggested Meals</h1>
                         <div className="flex gap-4 mt-6">
                             {user.dietPlan === "weight_loss" && weightLossMeals && weightLossMeals.map((meal, index) => (
-                                <>
-                                    <div key={index} className="card image-full w-96 shadow-xl">
-                                        <figure>
-                                            <img
-                                                src={meal.image}
-                                                alt="Shoes" />
-                                        </figure>
-                                        <div className="card-body">
-                                            <h2 className="card-title text-gray-50">{meal.name}</h2>
-                                            <p className="text-white/80">{meal.description}</p>
-                                            <div className="card-actions justify-end">
-                                                <button className="btn btn-primary text-white">Recipe</button>
-                                            </div>
+                                <div key={index} className="card image-full w-96 shadow-xl">
+                                    <figure>
+                                        <img src={meal.image} alt="Shoes" />
+                                    </figure>
+                                    <div className="card-body">
+                                        <h2 className="card-title text-gray-50">{meal.name}</h2>
+                                        <p className="text-white/80">{meal.description}</p>
+                                        <div className="card-actions justify-end">
+                                            <button
+                                                className="btn btn-primary text-white"
+                                                onClick={() => openModal(meal)}
+                                            >
+                                                Recipe
+                                            </button>
                                         </div>
                                     </div>
-                                </>
+                                </div>
                             ))}
                             {user.dietPlan === "weight_gain" && weightGainMeals && weightGainMeals.map((meal, index) => (
-                                <>
-                                    <div key={index} className="card image-full w-96 shadow-xl">
-                                        <figure>
-                                            <img
-                                                src={meal.image}
-                                                alt="Shoes" />
-                                        </figure>
-                                        <div className="card-body">
-                                            <h2 className="card-title text-gray-50">{meal.name}</h2>
-                                            <p className="text-white/80">{meal.description}</p>
-                                            <div className="card-actions justify-end">
-                                                <button
-                                                    className="btn btn-primary text-white"
-                                                    onClick={() => openModal(meal)}
-                                                >
-                                                    Recipe
-                                                </button>
-                                            </div>
+                                <div key={index} className="card image-full w-96 shadow-xl">
+                                    <figure>
+                                        <img src={meal.image} alt="Shoes" />
+                                    </figure>
+                                    <div className="card-body">
+                                        <h2 className="card-title text-gray-50">{meal.name}</h2>
+                                        <p className="text-white/80">{meal.description}</p>
+                                        <div className="card-actions justify-end">
+                                            <button
+                                                className="btn btn-primary text-white"
+                                                onClick={() => openModal(meal)}
+                                            >
+                                                Recipe
+                                            </button>
                                         </div>
                                     </div>
-
-
-                                </>
+                                </div>
                             ))}
-
-
                         </div>
                     </div>
                 </TabsContent>
@@ -226,6 +237,27 @@ function Roadmap() {
                             </Table>
                         </CardContent>
                     </Card>
+
+                    {/* Timer Section */}
+                    <div className="text-center mb-6">
+                        <h2 className="text-xl font-semibold">Exercise Timer</h2>
+                        <div className="flex items-center justify-center space-x-4 mt-4">
+                            <span className="text-xl">{Math.floor(timer / 60)}:{timer % 60}</span>
+                            <button onClick={handleStartStopTimer} className="btn btn-primary">
+                            {timerRunning ? "Stop Timer" : "Start Timer"}
+                            </button>
+                            <button onClick={handleResetTimer} className="btn btn-secondary">Reset Timer</button>
+                        </div>
+                    </div>
+
+                    {/* Weekly Achievement Section */}
+                    <div className="bg-green-100 p-4 rounded-lg text-center">
+                        <h2 className="text-lg font-semibold">Weekly Achievement</h2>
+                        <p className="text-gray-600">You've completed {weeklyAchievements} exercises this week!</p>
+                        <button onClick={handleExerciseCompletion} className="btn btn-success mt-2">
+                        Mark Exercise as Complete
+                        </button>
+                    </div>
                 </TabsContent>
 
                 <TabsContent value="chart">

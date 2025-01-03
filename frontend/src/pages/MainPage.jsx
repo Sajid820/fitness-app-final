@@ -334,7 +334,7 @@ export default function MainPage() {
         </motion.div>
 
         {show && (
-          <ChatBot />
+          <ChatBot user={user}/>
         )}
 
       </div>

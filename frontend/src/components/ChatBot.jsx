@@ -1,5 +1,3 @@
-
-
 import { useState, useRef, useEffect } from 'react'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -11,7 +9,8 @@ const predefinedQuestions = [
     "What's the best exercise for building muscle?",
     "How often should I work out?",
     "What's a good post-workout meal?",
-    "How can I improve my flexibility?"
+    "How can I improve my flexibility?",
+    "lose weight?"
 ]
 
 const fitnessResponses = {
@@ -19,10 +18,12 @@ const fitnessResponses = {
     "what's the best exercise for building muscle?": "Compound exercises like squats, deadlifts, bench presses, and rows are excellent for building muscle. These exercises work multiple muscle groups simultaneously and stimulate overall muscle growth. Remember to progressively increase the weight and maintain proper form.",
     "how often should i work out?": "For general fitness, aim for at least 150 minutes of moderate-intensity or 75 minutes of vigorous-intensity aerobic activity per week, along with strength training for all major muscle groups at least twice a week. However, the ideal frequency depends on your specific goals and current fitness level.",
     "what's a good post-workout meal?": "A good post-workout meal should include both protein and carbohydrates. Protein helps repair and build muscle, while carbs replenish energy stores. Examples include a chicken breast with brown rice and vegetables, a protein shake with a banana, or Greek yogurt with berries and granola.",
-    "how can i improve my flexibility?": "To improve flexibility, incorporate regular stretching into your routine. Try dynamic stretches before workouts and static stretches after. Yoga and Pilates are also excellent for improving flexibility. Aim to stretch major muscle groups for 10-30 seconds each, at least 2-3 times a week. Remember to warm up before stretching to prevent injury."
+    "how can i improve my flexibility?": "To improve flexibility, incorporate regular stretching into your routine. Try dynamic stretches before workouts and static stretches after. Yoga and Pilates are also excellent for improving flexibility. Aim to stretch major muscle groups for 10-30 seconds each, at least 2-3 times a week. Remember to warm up before stretching to prevent injury.",
+    "lose weight?": "To lose weight effectively, focus on creating a calorie deficit by eating a balanced, nutrient-dense diet and increasing physical activity. Opt for whole, unprocessed foods, limit added sugars and refined carbs, and prioritize lean proteins, fruits, vegetables, and healthy fats. Stay hydrated, get enough sleep, and maintain a consistent exercise routine with a mix of cardio and strength training. Consistency and sustainable habits are key.",
+    "active": "To stay active, incorporate regular physical activity into your daily routine, such as walking, cycling, or taking the stairs. Aim for at least 30 minutes of moderate exercise most days, and include activities you enjoy, like dancing, swimming, or playing sports. Break up long periods of sitting with short movement breaks to keep your body engaged throughout the day."
 }
 
-function ChatBot() {
+function ChatBot({ user }) {
     const [messages, setMessages] = useState([])
     const [inputValue, setInputValue] = useState('')
     const messagesEndRef = useRef(null)
@@ -36,22 +37,19 @@ function ChatBot() {
     const handleSendMessage = (message) => {
         if (message.trim() === '') return;
 
-        console.log('User message:', message);
-
-
         setMessages((prev) => [...prev, { text: message, isUser: true }]);
 
-        const lowerCaseMessage = message.trim().toLowerCase();
-        console.log('Processed message:', lowerCaseMessage);
-
-        const response =
-            fitnessResponses[lowerCaseMessage] ||
-            "I'm sorry, I can only answer fitness-related questions. Could you please ask something about exercise, nutrition, or general fitness?";
-
-        setTimeout(() => {
-            console.log('Bot response:', response);
+        if (message.toLowerCase().includes("my plan")) {
+            const response = `Your BMI is ${user.bmi.toFixed(1)}, your BMR is ${user.bmr.toFixed(1)}, and your selected plan is ${user.dietPlan}.`;
             setMessages((prev) => [...prev, { text: response, isUser: false }]);
-        }, 500);
+        } else {
+            const lowerCaseMessage = message.trim().toLowerCase();
+            const response =
+                fitnessResponses[lowerCaseMessage] ||
+                "I'm sorry, I can only answer fitness-related questions. Could you please ask something about exercise, nutrition, or general fitness?";
+
+            setMessages((prev) => [...prev, { text: response, isUser: false }]);
+        }
 
         setInputValue('');
     };
@@ -120,4 +118,3 @@ function ChatBot() {
 }
 
 export default ChatBot
-
